@@ -1,0 +1,24 @@
+{% extends 'porteiros/base/base.html' %}
+
+{% block content %}
+<body>
+
+  <form action="" method="post" autocomplete="off">
+    {% csrf_token %} 
+
+    <div>
+      <label for="placa">Placa do Veículo</label>
+      <input type="text" name="placa" placeholder="Digite a Placa" maxlength="8" required oninput="this.value = this.value.toUpperCase()"><br>
+
+      <label for="veiculo">Veículo</label>
+      <input type="text" name="veiculo" placeholder="Digite o Veículo" maxlength="10" required oninput="this.value = this.value.toUpperCase()"><br>
+
+
+      <label for="empresa">Empresa</label>
+      <input type="text" name="empresa" placeholder="Digite a Empresa" maxlength="50" required oninput="this.value = this.value.toUpperCase()"><br>
+    
+      <input class="cadastrar" type="submit" value="Cadastrar">
+    </div>
+  </form>
+</body>
+{% endblock %}

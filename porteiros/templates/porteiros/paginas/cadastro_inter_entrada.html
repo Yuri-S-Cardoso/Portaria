@@ -1,0 +1,137 @@
+{% include 'porteiros/base/cad_base.html' %}
+
+<style>
+
+.relogio_entrada{
+    position: absolute;
+    top:19rem;
+    left: 10rem;
+    font-size: 1.7rem;
+    height: auto;
+}
+.relogio_entrada input{
+    font-size: 1rem;
+}
+.km_entrada{
+    position: absolute;
+    top:19rem;
+    left: 33rem;
+    font-size: 1.7rem;
+}
+.km_entrada input{
+    font-size: 1rem;
+}
+.lacre_entrada{
+    position: absolute;
+    top:19rem;
+    left: 57rem;
+    font-size: 1.7rem;
+}
+.lacre_entrada select{
+    font-size: 1.2rem;
+}
+.nf_entrada{
+    position: absolute;
+    top:25rem;
+    left: 13rem;
+    font-size: 1.7rem;
+}
+.nf_entrada input{
+    font-size: 1rem;
+}
+.malotes_entrada{
+    position: absolute;
+    top: 25rem;
+    left: 43rem;
+    font-size: 1.7rem;
+}
+.malotes_entrada input{
+    font-size: 1rem;
+}
+
+</style>
+
+<div class="topnav">
+    <hr>
+    <h1 class="inter">Inter</h1>
+
+    <form action="{% url 'cadastro_inter_entrada' %}" method="post" autocomplete="off">
+        {% csrf_token %}
+        
+        <div class="placa">
+            <input type="text" name="placa_entrada" value="{{ request.GET.placa }}" readonly>
+        </div>
+    
+
+            <hr>
+
+        <div class="titulo">
+            <h2>ENTRADA</h2>
+            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        
+            
+    
+            <div class="relogio_entrada">
+                <label for="" class="entrada">Entrada:</label>
+                <input type="text" name="data_entrada" id="data_hora_input_display" disabled readonly>
+            </div>
+
+            <div class="km_entrada">
+                <label for="">Km Entrada:</label>
+                <input type="number" name="km_entrada" required>
+            </div>  
+
+            <div class="lacre_entrada">
+                <label for="">Lacre Entrada:</label>
+                    <select name="lacre_entrada" id="" class="select" required style="cursor: pointer;">
+                        <option disabled selected>...</option>
+                        <option>VERMELHO</option>
+                        <option>AMARELO</option>
+                    </select>
+            </div>
+
+            <div class="nf_entrada">
+                <label for="">NF'S Entrada:</label>
+                <input type="number" name="nfs_entrada" value="{{ registro_saida.nfs_saida }}" required>
+            </div>
+
+            <div class="malotes_entrada">
+                <label for="">QTDE Malotes Entrada:</label>
+                <input type="number" name="qtde_malotes_entrada" required>
+            </div>
+        </div>
+        <script>
+            function atualizarRelogio() {
+                var dataHoraAtual = new Date().toLocaleString();
+                document.getElementById("data_hora_input_display").value = dataHoraAtual;
+            }
+        
+            atualizarRelogio();
+            
+            setInterval(atualizarRelogio, 1000);  
+
+            //--------------------------------------------------------------
+            
+            var placaSelecionada = "{{ placa_selecionada }}";
+            var veiculoSelecionado = "{{ veiculo_selecionado }}";
+
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById("placa-select").value = placaSelecionada;
+                document.getElementById("veiculo-input").value = veiculoSelecionado;
+            });
+        </script>
+
+        <div class="botão">
+            <input class="Salvar" type="submit" value="Salvar">
+        
+            <a href="{% url 'cadastro_inter' %}">
+              <input type="button" id="cancelar" value="Cancelar">
+            </a>
+        
+            <a href="{% url 'cadastro' %}">
+              <input type="button" id="sair" value="Sair">
+            </a>
+        </div>
+
+    </form>
+</div>

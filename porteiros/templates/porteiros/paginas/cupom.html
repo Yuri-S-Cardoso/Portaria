@@ -1,0 +1,45 @@
+{% load static %}
+
+<img src="{% static 'images/logo.png' %}" style="width: 120px;">
+
+<p>PLACA: {{ placa_entrada }}</p>
+<p>HORA: {{ data_hora_atual }}</p>
+<p>EMPRESA: {{ cnpj }}</p>
+<p>CARGA:{{ carga_entrada }}</p>
+<p>NFS: {{ nfs_prefixo }};
+ {{ nfs_de }};
+ {{ nfs_ate }};
+ {{ nfs_exceto }};
+ {{ nfs_apenas }}
+</p>
+<p>INÍCIO DESCARGA:_____________</p>
+<p>FIM DESCARGA:_____________</p>
+<p>QTD SAÍDA PALLETS:_____________</p>
+<p>VALOR DESCARGA:_____________</p>
+<p>CARGA P/ OUTRO CLIENTE;NF'S Nº:_____________</p>
+<p>DEVOLUÇÃO INTER NF'S Nº:_____________</p>
+<p>LACRE SAÍDA INTER:_____________</p>
+<p>HORA LIBERAÇÃO CAMINHÃO:_____________</p>
+<p>SR MOTORISTA ENTREGAR ESTE CONTROLE NA PORTARIA. <br>
+    O CAMINHÃO TEM 5(CINCO) MINUTOS PARA SAIR!
+</p>
+
+<script>
+    // Função para acionar a impressão
+    function imprimirCupom() {
+        window.print();
+    }
+
+    // Evento que detecta quando a página é carregada
+    window.onload = function () {
+        // Chama a função de impressão assim que a página for carregada
+        imprimirCupom();
+        // Aguarde 3 segundos (tempo suficiente para o usuário iniciar a impressão ou cancelar)
+        setTimeout(redirecionarParaCadastro, 3000);
+    };
+
+    // Função para redirecionar para a página 'cadastro'
+    function redirecionarParaCadastro() {
+        window.location.href = "{% url 'cadastro' %}";
+    }
+</script>

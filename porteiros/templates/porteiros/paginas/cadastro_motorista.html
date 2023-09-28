@@ -1,0 +1,17 @@
+{% extends 'porteiros/base/base.html' %}
+
+{% block content %}
+
+    <form action="" method="post" autocomplete="off">
+        {% csrf_token %}
+
+<br><br><br><br>
+
+        <label for="nome">Motorista:</label>
+        <input type="text" id="nome" name="nome" placeholder="Digite o nome do motorista" maxlength="100" required oninput="this.value = this.value.toUpperCase()">
+
+        <input class="cadastrar" type="submit" value="Cadastrar">
+
+    </form>
+
+{% endblock %}

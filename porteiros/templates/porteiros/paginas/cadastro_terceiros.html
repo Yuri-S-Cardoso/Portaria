@@ -1,0 +1,214 @@
+{% include 'porteiros/base/cad_style.html' %}
+{% include 'porteiros/base/cad_base.html' %}
+
+
+<div class="topnav">
+  <hr>
+  <h1 class="cabeçalho">Terceiros</h1>
+
+  <form action="{% url 'cadastro_terceiros' %}" method="post" autocomplete="off" onsubmit="return validateForm()">
+    {% csrf_token %}
+    <div class="placa_entrada">
+      <input type="text" name="placa_entrada" id="placa-entrada" oninput="this.value = this.value.toUpperCase()" onkeypress="buscarPorTeclaEnter(event)" onblur="buscarPorMudancaCampo()" required>
+    </div>
+    
+    <div class="veiculo_entrada">
+      <input type="text" name="veiculo_entrada" oninput="this.value = this.value.toUpperCase()" required>
+    </div>
+
+    <hr>
+  
+    <div class="titulo">
+        <h2>ENTRADA</h2>
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+      
+      <div class="relogio">
+        <p>{{ data_hora_atual|date:"d/m/Y H:i:s" }}</p>
+        <label for="" class="saida">Entrada:</label>
+        <input type="text" name="data" id="data_hora_input" value="{{ data_hora_atual }}" disabled readonly>
+      </div>
+    
+      <div class="cnpj">
+        <label for="">CNPJ da Empresa:</label>
+        <input id="cnpj-input" type="number" name="cnpj" required>
+        <input id="nome-input" class="id" type="text" name="nome" disabled>
+      </div>
+    
+      <div class="carga_terc">
+        <label for="">Carga:</label>
+        <select name="carga_entrada" style="cursor: pointer;" required>
+            <option disabled selected>...</option>
+            <option>ADM</option>
+            <option>FRIGORÍFICO</option>
+            <option>MANUTENÇÃO</option>
+            <option>OFICINA</option>
+            <option>SECA</option>
+            <option>OUTROS</option>
+        </select>
+      </div>
+
+      <div class="motorista">
+        <label>Motorista</label>
+        <input type="text" name="motorista" oninput="this.value = this.value.toUpperCase()" required>
+      </div>
+
+      <div class="ajudante">
+        <label>Nº de Ajudantes:</label>
+        <input type="number" name="ajudante" oninput="this.value = this.value.toUpperCase()" required>
+      </div>
+
+      <div class="paletes">
+        <label>QTDE Paletes Recebidos:</label>
+        <input type="number" name="paletes" required>
+      </div>
+
+      <div class="chapelex">
+        <label>QTDE Chapelex Recebidos:</label>
+        <input type="number" name="chapelex" required>
+      </div>
+
+
+      <div class="nfs">
+        <label class="index">NF'S de Entrada:</label><br>
+
+        <label>Prefixo:</label>
+        <input type="number" name="nfs_prefixo" required>
+
+        <label>De:</label>
+        <input type="number" name="nfs_de" required>
+
+        <label>Até:</label>
+        <input type="number" name="nfs_ate" required>
+
+        <label>Exceto:</label>
+        <input type="number" name="nfs_exceto" required>
+
+        <label>Apenas:</label>
+        <input type="number" name="nfs_apenas" required>
+      </div>
+
+      <div class="botão">
+        <input class="Salvar" type="submit" value="Salvar" style="cursor: pointer;">
+    
+        <a href="{% url 'cadastro_terceiros' %}">
+          <input type="button" id="cancelar" value="Cancelar" style="cursor: pointer;">
+        </a>
+    
+        <a href="{% url 'cadastro' %}">
+          <input type="button" id="sair" value="Sair" style="cursor: pointer;">
+        </a>
+      </div>
+
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+      <script>
+        function atualizarRelogio() {
+          var dataHoraAtual = new Date().toLocaleString();
+          document.getElementById("data_hora_input").value = dataHoraAtual;
+        }
+      
+        atualizarRelogio();
+      
+        setInterval(atualizarRelogio, 1000); 
+
+        //--------------------------------------------------------
+
+        function validateForm() {
+          var inputs = document.getElementsByTagName('input');
+          var selects = document.getElementsByTagName('select');
+          var isValid = true;
+      
+          for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].hasAttribute('required') && inputs[i].value === '') {
+              isValid = false;
+              break;      
+            }
+          }
+      
+          for (var i = 0; i < selects.length; i++) {
+            if (selects[i].hasAttribute('required') && selects[i].value === '') {
+              isValid = false;
+              break;      
+            }
+          }
+      
+          if (!isValid) {
+            alert('Por favor, preencha todos os campos obrigatórios.');
+          }
+      
+          return isValid;
+        }
+
+        //----------------------------------------------------------
+
+        $(document).ready(function() {
+          $('input[name="cnpj"]').change(function(event) {
+            event.preventDefault(); 
+        
+            var cnpj = $(this).val();
+        
+            var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+        
+            $.ajax({
+              url: '/verificar_cnpj/',
+              method: 'POST',
+              headers: {'X-CSRFToken': csrftoken},
+              data: {cnpj: cnpj, csrfmiddlewaretoken: csrftoken}, 
+              success: function(response) {
+                if (response.error) {
+                  var confirmarCadastro = confirm('O CNPJ não está cadastrado. Deseja cadastrar agora?');
+                  if (confirmarCadastro) {
+                    window.location.href = '/cadastro_cnpj_terceiros/';
+                  }
+                  $('#nome-input').val('');
+                  $('#resultado-cadastro').text(response.error);
+                } else {
+                  $('#nome-input').val(response.nome); 
+                  $('#resultado-cadastro').text('');
+                }
+              }
+            });
+          });
+        });    
+
+        //------------------------------------------------------------
+
+        function buscarPorTecla() {
+          const placaEntrada = document.getElementById('placa-entrada').value.toUpperCase();
+          const url = '{% url "busca_terceiros" %}';  // Substitua "busca_terceiros" pela URL da view no Django para busca
+      
+          $.ajax({
+            url: url,
+            type: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}',  // CSRF token necessário para enviar uma solicitação POST
+            },
+            data: JSON.stringify({ placa: placaEntrada }),
+            dataType: 'json',
+            success: function(data) {
+              if (data.placa_entrada_existente && data.placa_saida_existente) {
+                // Se a placa existir tanto em CadastroTerceiros quanto em CadastroTerceirosSaida
+                // Continuar na página atual (comportamento padrão do formulário)
+              } else if (data.placa_entrada_existente) {
+                // Se a placa existir apenas em CadastroTerceiros
+                const placa = encodeURIComponent(placaEntrada);
+                window.location.href = '{% url "cadastro_terceiros_saida" %}?placa=' + placa;  // Redirecionar para "cadastro_terceiros_saida"
+              } else {
+                // Se a placa não existir em nenhum dos dois
+                // Continuar na página atual (comportamento padrão do formulário)
+              }
+            },
+            error: function(error) {
+              console.error('Erro na requisição:', error);
+            }
+          });
+        }
+      
+        // Adicionando o evento de escuta para acionar a busca na digitação
+        document.getElementById('placa-entrada').addEventListener('input', buscarPorTecla);
+
+      </script>
+    </div>    
+  </form>
+</div>
